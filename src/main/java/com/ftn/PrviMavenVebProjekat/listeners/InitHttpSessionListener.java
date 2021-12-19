@@ -15,6 +15,8 @@ public class InitHttpSessionListener implements HttpSessionListener {
 		System.out.println("Inicijalizacija sesisje HttpSessionListener...");
 //		
 //		//pri kreiranju sesije inicijalizujemo je ili radimo neke dodatne aktivnosti
+		HttpSession session  = arg0.getSession();
+		System.out.println("session id korisnika je "+session.getId());
 //		
 		System.out.println("Uspeh HttpSessionListener!");
 	}

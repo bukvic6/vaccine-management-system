@@ -1,6 +1,7 @@
 package com.ftn.PrviMavenVebProjekat.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
@@ -31,8 +32,6 @@ public class TerminiController  implements ApplicationContextAware{
 	
 	public static final String TERMINI_KEY = "termini";
 	
-
-	
 	@Autowired
 	private ServletContext servletContext;
 	private String bURL;
@@ -55,12 +54,14 @@ public class TerminiController  implements ApplicationContextAware{
 		bURL = servletContext.getContextPath() + "/";
 		memorijaAplikacije = applicationContext.getBean(ApplicationMemory.class);
 		
-
 		Termini termini = new Termini();
 		
 //		postavljanje termina u memoriju aplikacije
 		
 		memorijaAplikacije.put(TerminiController.TERMINI_KEY, termini);
+		
+		servletContext.setAttribute(TerminiController.TERMINI_KEY, termini);	
+
 	}
 //	preuzmemo iz memorije app termine koje smo ucitali  i onda napravimo html stranicu koja vraca povratnu vrednost
 //	koristimo klasu termini koja sadrzi kolekciju termina 
@@ -73,8 +74,9 @@ public class TerminiController  implements ApplicationContextAware{
 
 		
 		Korisnik ulogovani = (Korisnik) session.getAttribute(KorisnikController.ULOGOVANI_KORISNIK_KEY);
+		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
 		
-		Long iddd = ulogovani.getId();
+		
 		
 		StringBuilder retVal = new StringBuilder();
 
@@ -89,29 +91,32 @@ public class TerminiController  implements ApplicationContextAware{
 				"<body>\n" +
 				"<table>" +
 				       "<tr>" + 
-				            "<th>Ime</th>" +
+				            "<th></th>" +
 				            "<th>Prezime</th>" +
 				            "<th>JMBG</th>" +
 				            "<th>Vreme</th>" +
 				            "<th>Vakcina</th>" +
 				"</tr>");
-		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);		
-		List<Termin> listaTermina = termini.findOne(iddd);
+		String jmbgg = ulogovani.getJmbg();
+	
+		
+		List<Termin> listaTermina = termini.findOne(jmbgg);
+		
 
 		
 		for(int i = 0; i< listaTermina.size(); i++) {
 			retVal.append("<tr>"
-							+ "<td>" + ulogovani.getIme() + "</td>"
-									+ "<td>" + ulogovani.getPrezime() + "</td>"
-					+ "<td>" + listaTermina.get(i).getId()+ "</td>"
+					+ "<td>" + ulogovani.getIme()+ "</td>"
+					+ "<td>" + ulogovani.getPrezime() +"</td>"
+							+ "<td>" + ulogovani.getJmbg()+ "</td>"
 					+ "<td>" + listaTermina.get(i).getVreme()+ "</td>"
 							+ "<td>" + listaTermina.get(i).getVakcina()+ "</td>"
 									+ "<td>" +
-									"					<form method=\"post\" action=\"termini/delete\">\r\n" + 
-									"						<input type=\"hidden\" name=\"id\" value=\""+listaTermina.get(i).getId()+"\">\r\n" + 
-									"						<input type=\"submit\" value=\"Obriši\"></td>\r\n" + 
+									"		<form method=\"post\" action=\"termini/ukloni\">" +
+									"			<input type=\"hidden\" name=\"idtermin\" value=\""+listaTermina.get(i).getJmbg()+"\">\r\n" + 
+									"			<input type=\"submit\" value=\"Odustani\"></td>\r\n" + 
 									"					</form>\r\n" +
-									"				</td>" 
+									"	    </td>" 
 
 					+ "</tr>");
 		}
@@ -169,17 +174,26 @@ public class TerminiController  implements ApplicationContextAware{
 				"</html>\r\n");		
 		return retVal.toString();
 	}
-	/** obrada podataka forme za unos novog entiteta, post zahtev */
-	// POST: knjige/add
-	@PostMapping(value="/add")
-	public void create(@RequestParam String vreme, @RequestParam String vakcina, @RequestParam long id, HttpServletResponse response) throws IOException {		
-		//preuzimanje vrednosti iz konteksta
-		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
-		Termin termin = new Termin(id, vreme, vakcina);
-			
-		Termin saved = termini.save(termin);
-		response.sendRedirect(bURL+"termini");
-	}
+//	@PostMapping("/ukloni")
+//	public void ukloniTermin(@RequestParam Long idtermin,HttpServletResponse response) throws IOException {
+//       Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
+//       Termin deleted = termini.delete(idtermin);
+//       response.sendRedirect(bURL+"termini");
+//	}
+	
+	
+	
+//	/** obrada podataka forme za unos novog entiteta, post zahtev */
+//	// POST: termini/add
+//	@PostMapping(value="/add")
+//	public void create(@RequestParam String vreme, @RequestParam String vakcina, @RequestParam String id, HttpServletResponse response) throws IOException {		
+//		//preuzimanje vrednosti iz konteksta
+//		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
+//		Termin termin = new Termin(id, vreme, vakcina);
+//			
+//		Termin saved = termini.save(termin);
+//		response.sendRedirect(bURL+"termini");
+//	}
 	
 //	@PostMapping(value="/delete")
 //	public void delete(@RequestParam Long id, HttpServletResponse response) throws IOException {

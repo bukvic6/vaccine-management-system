@@ -13,6 +13,7 @@ public class Korisnici {
 	
 	private Map<Long, Korisnik> korisnici = new HashMap<>();
 	private long nextId = 1L;
+
 	
 	public Korisnici() {
 		try {
@@ -26,12 +27,12 @@ public class Korisnici {
 					continue;
 				String[] tokens = line.split(";");
 				Long id = Long.parseLong(tokens[0]);
-				String ime = tokens[1];
-				String prezime = tokens[2];
-				String lozinka = tokens[3];
-				String jmbg = tokens[4];
+				String jmbg = tokens[1];
+				String ime = tokens[2];
+				String prezime = tokens[3];
+				String lozinka = tokens[4];
 
-				korisnici.put(Long.parseLong(tokens[0]), new Korisnik(id, ime, prezime, lozinka, jmbg));
+				korisnici.put(Long.parseLong(tokens[0]), new Korisnik(id, jmbg, ime, prezime, lozinka));
 				if(nextId<id)
 					nextId=id;
 			}
@@ -41,7 +42,7 @@ public class Korisnici {
 		}
 	}
 	
-	/** vraca knjigu u odnosu na zadati id */
+	/** vraca termin u odnosu na zadati jmbg */
 	public Korisnik findOne(Long id) {
 		return korisnici.get(id);
 	}

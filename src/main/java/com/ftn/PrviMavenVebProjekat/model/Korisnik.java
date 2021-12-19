@@ -1,35 +1,41 @@
 package com.ftn.PrviMavenVebProjekat.model;
 
 public class Korisnik {
-	
 	private Long id;
+	private String jmbg;
 	private String ime;
 	private String prezime;
 	private String lozinka;
-	private String jmbg;
+
 	
 	public Korisnik() {}
-
-	public Korisnik(String ime, String prezime, String lozinka, String jmbg) {
-		super();
-		this.ime = ime;
-		this.prezime = prezime;
-		this.lozinka = lozinka;
-		this.jmbg = jmbg;
-	}
-	
-	public Korisnik(Long id, String ime, String prezime, String lozinka, String jmbg) {
+	public Korisnik(Long id, String jmbg, String ime, String prezime, String lozinka) {
 		super();
 		this.id = id;
+		this.jmbg = jmbg;
 		this.ime = ime;
 		this.prezime = prezime;
 		this.lozinka = lozinka;
+
+	}
+
+	public Korisnik( String jmbg, String ime, String prezime, String lozinka) {
+		super();
 		this.jmbg = jmbg;
+		this.ime = ime;
+		this.prezime = prezime;
+		this.lozinka = lozinka;
+
 	}
 	
-	public Long getId() { return id; }
 
-	public void setId(Long id) { this.id = id; }
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getIme() { return ime; }
 
@@ -55,7 +61,7 @@ public class Korisnik {
 
 	@Override
 	public String toString() {
-		return this.ime + " " + this.prezime + " (" + this.lozinka + ")";
+		return this.id + ";" +this.jmbg+ ";" +  this.ime+ ";" + this.prezime + ";" + this.lozinka;
 	}
 
 	
