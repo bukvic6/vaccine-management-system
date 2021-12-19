@@ -6,18 +6,18 @@ public class Korisnik {
 	private String ime;
 	private String prezime;
 	private String lozinka;
-	private String tipKorisnika;
+	private TipKorisnika tipKorisnika;
 
 	
 	public Korisnik() {}
-	public Korisnik(Long id, String jmbg, String ime, String prezime, String lozinka, String tipKorisnika) {
+	public Korisnik(Long id, String jmbg, String ime, String prezime, String lozinka, TipKorisnika tipKorisnika) {
 		super();
 		this.id = id;
 		this.jmbg = jmbg;
 		this.ime = ime;
 		this.prezime = prezime;
 		this.lozinka = lozinka;
-		this.setTipKorisnika(tipKorisnika);
+		this.tipKorisnika = tipKorisnika;
 
 	}
 
@@ -65,12 +65,13 @@ public class Korisnik {
 	public String toString() {
 		return this.id + ";" +this.jmbg+ ";" +  this.ime+ ";" + this.prezime + ";" + this.lozinka;
 	}
-	public String getTipKorisnika() {
+	public TipKorisnika getTipKorisnika() {
 		return tipKorisnika;
 	}
-	public void setTipKorisnika(String tipKorisnika) {
+	public void setTipKorisnika(TipKorisnika tipKorisnika) {
 		this.tipKorisnika = tipKorisnika;
 	}
+
 
 
 	

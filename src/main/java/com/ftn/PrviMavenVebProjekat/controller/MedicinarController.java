@@ -1,9 +1,11 @@
 package com.ftn.PrviMavenVebProjekat.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeansException;
@@ -12,7 +14,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ftn.PrviMavenVebProjekat.bean.SecondConfiguration.ApplicationMemory;
@@ -48,12 +52,12 @@ public class MedicinarController implements ApplicationContextAware{
 		
 		Termini termini = new Termini();
 		
-		memorijaAplikacije.put(TerminiController.TERMINI_KEY, termini);
+		memorijaAplikacije.put(MedicinarController.TERMINI_KEY, termini);
 	}
 	@GetMapping		
 	@ResponseBody
 	public String medicinski() {
-		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
+		Termini termini = (Termini) memorijaAplikacije.get(MedicinarController.TERMINI_KEY);
 		
         StringBuilder retVal = new StringBuilder();
 
@@ -84,7 +88,7 @@ public class MedicinarController implements ApplicationContextAware{
 					+ "<td>" + listaTermina.get(i).getVreme()+ "</td>"
 							+ "<td>" + listaTermina.get(i).getVakcina()+ "</td>" +
 							"				<td>" + 
-							"					<form method=\"post\" action=\"termini/ukloni\">\r\n" + 
+							"					<form method=\"post\" action=\"medicinar/ukloni\">\r\n" + 
 							"						<input type=\"hidden\" name=\"id\" value=\""+listaTermina.get(i).getId()+ "\">\r\n" + 
 							"						<input type=\"submit\" value=\"Daj vakcinu\"></td>\r\n" + 
 							"					</form>\r\n" +
@@ -101,6 +105,12 @@ public class MedicinarController implements ApplicationContextAware{
 		
 		
 	}
-	
+	@PostMapping(value="/ukloni")
+	public void ukloniTermin(@RequestParam Long id, HttpServletResponse response) throws IOException {
+		Termini termini = (Termini) memorijaAplikacije.get(MedicinarController.TERMINI_KEY);
+		Termin deleted = termini.delete(id);
+		response.sendRedirect(bURL + "medicinar");
+       
+	}
 	
 }

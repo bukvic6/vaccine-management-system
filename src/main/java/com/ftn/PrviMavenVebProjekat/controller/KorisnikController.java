@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ftn.PrviMavenVebProjekat.bean.SecondConfiguration.ApplicationMemory;
 import com.ftn.PrviMavenVebProjekat.model.Korisnici;
 import com.ftn.PrviMavenVebProjekat.model.Korisnik;
+import com.ftn.PrviMavenVebProjekat.model.TipKorisnika;
 
 @Controller
 @RequestMapping(value = "/korisnici")
@@ -99,7 +100,7 @@ public class KorisnikController {
 		if(session.getAttribute(KORISNIK_KEY)!= null) {
 			greska = "Potrebno je da se prvo odjavite. <br/>";
 		}
-		if(korisnik.getTipKorisnika().equals("MEDICINAR")) {
+		if(korisnik.getTipKorisnika().equals(TipKorisnika.MEDICINAR)) {
 			session.setAttribute(ULOGOVANI_KORISNIK_KEY, korisnik);
 			response.sendRedirect(bURL + "medicinar");
 		}else {
