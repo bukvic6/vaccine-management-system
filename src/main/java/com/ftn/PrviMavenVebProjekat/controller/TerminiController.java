@@ -110,6 +110,7 @@ public class TerminiController  implements ApplicationContextAware{
 					+ "<td>" + ulogovani.getIme()+ "</td>"
 					+ "<td>" + ulogovani.getPrezime() +"</td>"
 							+ "<td>" + ulogovani.getJmbg()+ "</td>"
+									+ "<td>" + listaTermina.get(i).getId()+ "</td>" 
 					+ "<td>" + listaTermina.get(i).getVreme()+ "</td>"
 							+ "<td>" + listaTermina.get(i).getVakcina()+ "</td>" +
 							"				<td>" + 

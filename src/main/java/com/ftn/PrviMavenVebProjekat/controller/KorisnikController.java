@@ -99,9 +99,14 @@ public class KorisnikController {
 		if(session.getAttribute(KORISNIK_KEY)!= null) {
 			greska = "Potrebno je da se prvo odjavite. <br/>";
 		}
-
-		session.setAttribute(ULOGOVANI_KORISNIK_KEY, korisnik);
-		response.sendRedirect(bURL + "termini");
+		if(korisnik.getTipKorisnika().equals("MEDICINAR")) {
+			session.setAttribute(ULOGOVANI_KORISNIK_KEY, korisnik);
+			response.sendRedirect(bURL + "medicinar");
+		}else {
+			session.setAttribute(ULOGOVANI_KORISNIK_KEY, korisnik);
+			response.sendRedirect(bURL + "termini");
+			
+		}
 		
 	}
 	

@@ -1,6 +1,7 @@
 package com.ftn.PrviMavenVebProjekat.model;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -63,18 +64,26 @@ public class Termini {
 	}
 	
 	public Termin save(Termin termin) throws IOException {
-		if (termin.getId() == null) {
-			termin.setId(++nextId);
-		}
-		termin.setVreme(LocalDateTime.now());
-		termini.put(termin.getId(), termin);
-        BufferedWriter writer = new BufferedWriter(new FileWriter("korisnici.txt"));
-        String sadrzaj = "";
-        for (Termin t: termini.values()){
-            sadrzaj += t.toString();
+		
+				
+		try {
+//			Path path = Paths.get(getClass().getClassLoader().getResource("termini.txt").toURI());
+
+			if (termin.getId() == null) {
+				termin.setId(++nextId);
+			}
+			termin.setVreme(LocalDateTime.now());
+			termini.put(termin.getId(), termin);
+	        BufferedWriter writer = new BufferedWriter(new FileWriter("termini.txt"));
+	        String sadrzaj = "";
+	        for (Termin t: termini.values()){
+	            sadrzaj += t.toString();
+	        }
+	        writer.write(sadrzaj);
+	        writer.close();
+        } catch (Exception e){
+            e.printStackTrace();
         }
-        writer.write(sadrzaj);
-        writer.close();
 		return termin;
 	}
 	

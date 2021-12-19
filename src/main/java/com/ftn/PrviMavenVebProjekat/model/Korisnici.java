@@ -31,8 +31,9 @@ public class Korisnici {
 				String ime = tokens[2];
 				String prezime = tokens[3];
 				String lozinka = tokens[4];
+				String tipKorisnika = tokens[5];
 
-				korisnici.put(Long.parseLong(tokens[0]), new Korisnik(id, jmbg, ime, prezime, lozinka));
+				korisnici.put(Long.parseLong(tokens[0]), new Korisnik(id, jmbg, ime, prezime, lozinka,tipKorisnika));
 				if(nextId<id)
 					nextId=id;
 			}

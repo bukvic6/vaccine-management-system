@@ -1,2 +1,2 @@
-1;a;Pera;Peric;pera
-2;b;Mika;Mikic;mika
+1;a;Pera;Peric;pera;PACIJENT
+2;b;Mika;Mikic;mika;MEDICINAR
