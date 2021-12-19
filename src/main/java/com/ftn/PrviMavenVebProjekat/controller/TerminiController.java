@@ -156,17 +156,12 @@ public class TerminiController  implements ApplicationContextAware{
 				"		<table>\r\n" + 
 				"			<caption>Termin</caption>\r\n" + 
 				"            <tr><th>   "
-				+ "    <select id=\"country\" name=\"vakcina\">\n" + 
-				"      <option value=\"fizer\">Pfizer</option>\n" + 
-				"      <option value=\"sput\">Sputnik</option>\n" + 
-				"      <option value=\"sino\">Sinopharm</option>\n" + 
-				"       <option value=\"astra\">AstraZrnrca</option>\n" + 
-				"    </select></td></tr>\r\n" + 
-				"			<tr><th>id:</th><td><input type=\"text\" value=\"\" name=\"id\"/></td></tr>\r\n" + 
-				"			<tr><th>Vreme:</th><td><input type=\"text\" value=\"\" name=\"vreme\"/></td></tr>\r\n" +
-				"			<tr><th>Vakcina:</th><td><input type=\"text\" value=\"\" name=\"vakcina\"/>" + 
-				"			<tr><th></th><td><input type=\"submit\" value=\"Dodaj\" /></td>\r\n" + 
-				"		</table>\r\n" + 
+				+ "    <select name=\"vakcina\">\n" + 
+				"      <option value=\"Pfizer\">Pfizer</option>\n" + 
+				"      <option value=\"Sputnik\">Sputnik</option>\n" + 
+				"      <option value=\"Sinopharm\">Sinopharm</option>\n" + 
+				"       <option value=\"AstraZrnrca\">AstraZrnrca</option>\n" + 
+				"      <tr><th></th><td><input type=\"submit\" value=\"Dodaj\" /></td>\r\n" + 
 				"	</form>\r\n" +
 				"	<br/>\r\n");
 		retVal.append(
@@ -184,17 +179,31 @@ public class TerminiController  implements ApplicationContextAware{
        
 	}
 
-//	// POST: termini/add
-//	@PostMapping(value="/add")
-//	
-//	public void create(@RequestParam String vreme, @RequestParam String vakcina, @RequestParam String id, HttpServletResponse response) throws IOException {		
-//		//preuzimanje vrednosti iz konteksta
-//		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
-//		Termin termin = new Termin(id, vreme, vakcina);
-//			
-//		Termin saved = termini.save(termin);
-//		response.sendRedirect(bURL+"termini");
-//	}
+	// POST: termini/add
+	@PostMapping(value="/add")
+	
+	public void create(@RequestParam String vakcina, HttpServletResponse response,HttpSession session) throws IOException {		
+		//preuzimanje vrednosti iz konteksta
+		Korisnik ulogovani = (Korisnik) session.getAttribute(KorisnikController.ULOGOVANI_KORISNIK_KEY);
+
+		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
+		
+		Termin termin = new Termin();
+		if(vakcina.equals("Pfizer")) {
+			termin.setVakcina("Fizer");
+		}else if(vakcina.equals("Sputnik")) {
+			termin.setVakcina("Sputnik");
+		}else if(vakcina.equals("Sinopharm")) {
+			termin.setVakcina("Sinopharm");
+		}else {
+			termin.setVakcina("AstraZeneka");
+		}
+		termin.setJmbg(ulogovani.getJmbg());
+		
+			
+		Termin saved = termini.save(termin);
+		response.sendRedirect(bURL+"termini");
+	}
 }
 
 

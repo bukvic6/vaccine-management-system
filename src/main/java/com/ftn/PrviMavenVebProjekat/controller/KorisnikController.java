@@ -102,6 +102,7 @@ public class KorisnikController {
 
 		session.setAttribute(ULOGOVANI_KORISNIK_KEY, korisnik);
 		response.sendRedirect(bURL + "termini");
+		
 	}
 	
 

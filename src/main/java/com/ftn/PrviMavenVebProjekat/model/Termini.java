@@ -1,9 +1,13 @@
 package com.ftn.PrviMavenVebProjekat.model;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,12 +62,21 @@ public class Termini {
 
 	}
 	
-//	public Termin save(Termin termin) {
-//		if (termin.getId() == null) {
-//			termin.setId(++nextId);
-//		}
-//		termini.put(termin.getId(), termin);
-//		return termin;
+	public Termin save(Termin termin) throws IOException {
+		if (termin.getId() == null) {
+			termin.setId(++nextId);
+		}
+		termin.setVreme(LocalDateTime.now());
+		termini.put(termin.getId(), termin);
+        BufferedWriter writer = new BufferedWriter(new FileWriter("korisnici.txt"));
+        String sadrzaj = "";
+        for (Termin t: termini.values()){
+            sadrzaj += t.toString();
+        }
+        writer.write(sadrzaj);
+        writer.close();
+		return termin;
+	}
 	
 	public Termin delete(Long id) {
 		if (!termini.containsKey(id)) {
@@ -76,14 +89,6 @@ public class Termini {
 		return termin;
 		
 	}
-
-
-	
-	public Termin save(Termin termin) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 
 	
 }
