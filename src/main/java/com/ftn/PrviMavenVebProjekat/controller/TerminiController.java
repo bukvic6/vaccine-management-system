@@ -60,7 +60,7 @@ public class TerminiController  implements ApplicationContextAware{
 		
 		memorijaAplikacije.put(TerminiController.TERMINI_KEY, termini);
 		
-		servletContext.setAttribute(TerminiController.TERMINI_KEY, termini);	
+//		servletContext.setAttribute(TerminiController.TERMINI_KEY, termini);	
 
 	}
 //	preuzmemo iz memorije app termine koje smo ucitali  i onda napravimo html stranicu koja vraca povratnu vrednost
@@ -102,6 +102,7 @@ public class TerminiController  implements ApplicationContextAware{
 		
 		List<Termin> listaTermina = termini.findOne(jmbgg);
 		
+		
 
 		
 		for(int i = 0; i< listaTermina.size(); i++) {
@@ -110,15 +111,14 @@ public class TerminiController  implements ApplicationContextAware{
 					+ "<td>" + ulogovani.getPrezime() +"</td>"
 							+ "<td>" + ulogovani.getJmbg()+ "</td>"
 					+ "<td>" + listaTermina.get(i).getVreme()+ "</td>"
-							+ "<td>" + listaTermina.get(i).getVakcina()+ "</td>"
-									+ "<td>" +
-									"		<form method=\"post\" action=\"termini/ukloni\">" +
-									"			<input type=\"hidden\" name=\"idtermin\" value=\""+listaTermina.get(i).getJmbg()+"\">\r\n" + 
-									"			<input type=\"submit\" value=\"Odustani\"></td>\r\n" + 
-									"					</form>\r\n" +
-									"	    </td>" 
-
-					+ "</tr>");
+							+ "<td>" + listaTermina.get(i).getVakcina()+ "</td>" +
+							"				<td>" + 
+							"					<form method=\"post\" action=\"termini/ukloni\">\r\n" + 
+							"						<input type=\"hidden\" name=\"id\" value=\""+listaTermina.get(i).getId()+ "\">\r\n" + 
+							"						<input type=\"submit\" value=\"ukloni\"></td>\r\n" + 
+							"					</form>\r\n" +
+							"				</td>" +
+							"			</tr>\r\n");
 		}
 
 		retVal.append(
@@ -174,18 +174,19 @@ public class TerminiController  implements ApplicationContextAware{
 				"</html>\r\n");		
 		return retVal.toString();
 	}
-//	@PostMapping("/ukloni")
-//	public void ukloniTermin(@RequestParam Long idtermin,HttpServletResponse response) throws IOException {
-//       Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
-//       Termin deleted = termini.delete(idtermin);
-//       response.sendRedirect(bURL+"termini");
-//	}
+	@PostMapping(value="/ukloni")
 	
-	
-	
-//	/** obrada podataka forme za unos novog entiteta, post zahtev */
+	public void ukloniTermin(@RequestParam Long id, HttpServletResponse response) throws IOException {
+        
+		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
+		Termin deleted = termini.delete(id);
+		response.sendRedirect(bURL + "termini");
+       
+	}
+
 //	// POST: termini/add
 //	@PostMapping(value="/add")
+//	
 //	public void create(@RequestParam String vreme, @RequestParam String vakcina, @RequestParam String id, HttpServletResponse response) throws IOException {		
 //		//preuzimanje vrednosti iz konteksta
 //		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
@@ -194,20 +195,6 @@ public class TerminiController  implements ApplicationContextAware{
 //		Termin saved = termini.save(termin);
 //		response.sendRedirect(bURL+"termini");
 //	}
-	
-//	@PostMapping(value="/delete")
-//	public void delete(@RequestParam Long id, HttpServletResponse response) throws IOException {
-//		//preuzimanje vrednosti iz konteksta
-////		Knjige knjige = (Knjige)servletContext.getAttribute(KnjigeController.KNJIGE_KEY);
-//		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);		
-//		Termin deleted = termini.delete(id);
-//		response.sendRedirect(bURL+"termini");
-//	}
-	
-			
-
-
-	
-	
-
 }
+
+

@@ -32,7 +32,7 @@ public class Termini {
 				String vakcina = tokens[3];
 				
 
-				termini.put(Long.parseLong(tokens[0]), new Termin(jmbg, vreme, vakcina));
+				termini.put(Long.parseLong(tokens[0]), new Termin(id,jmbg, vreme, vakcina));
 				if(nextId<id)
 					nextId=id;
 
@@ -51,27 +51,12 @@ public class Termini {
 		}
 		return ret;
 		}
-	
-	public Termin findOned(String jmbg) {
-		return termini.get(jmbg);
-	}
 
 	/** VRACA TERMINE */
 	public List<Termin> findAll() {
 		return new ArrayList<Termin>(termini.values());
 
 	}
-//	public List<Termin> findAll(String jmbg) {
-//		List<Termin> matching = new ArrayList<>();
-//		for(Long id: jmbgs) {
-//			matching.add(extitiesMap.get(id));
-//
-//		}
-//		
-//		
-//		return new ArrayList<Termin>(termini.values());
-//
-//	}
 	
 //	public Termin save(Termin termin) {
 //		if (termin.getId() == null) {
@@ -80,18 +65,20 @@ public class Termini {
 //		termini.put(termin.getId(), termin);
 //		return termin;
 	
-//	public Termin delete(Long idtermin) {
-//		if (!termini.containsKey(idtermin)) {
-//			throw new IllegalArgumentException("tried to remove non existing book");
-//		}
-//		Termin termin = termini.get(idtermin);
-//		if (termin != null) {
-//			termin.remove(idtermin);
-//		}
-//		return termin;
-//		
-//	}
+	public Termin delete(Long id) {
+		if (!termini.containsKey(id)) {
+			throw new IllegalArgumentException("Pokusavate da izbrisete termin koji ne postoji");
+		}
+		Termin termin = termini.get(id);
+		if (termin != null) {
+			termini.remove(id);
+		}
+		return termin;
+		
+	}
 
+
+	
 	public Termin save(Termin termin) {
 		// TODO Auto-generated method stub
 		return null;
