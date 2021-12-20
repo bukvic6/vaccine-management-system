@@ -60,7 +60,7 @@ public class Termin {
 	
 	@Override
 	public String toString() {
-		return  id + ";" + jmbg + ";" + vreme  + ";" + vakcina + "\n";
+		return  this.getId() + ";" + this.getJmbg() + ";" + this.getVreme() + ";" + this.getVakcina();
 	}
 
 

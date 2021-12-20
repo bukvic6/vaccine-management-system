@@ -47,7 +47,7 @@ public class Termini {
 			e.printStackTrace();
 		}
 	}
-	public List<Termin> findOne(String jmbg) {
+	public List<Termin> terminiPoJmbg(String jmbg) {
 		ArrayList<Termin> ret = new ArrayList<>();
 		for (Termin t: termini.values()) {
 			if(t.getJmbg().equals(jmbg)){

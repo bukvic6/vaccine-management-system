@@ -18,46 +18,49 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.ServletContextAware;
 
 import com.ftn.PrviMavenVebProjekat.bean.SecondConfiguration.ApplicationMemory;
 import com.ftn.PrviMavenVebProjekat.model.Korisnik;
 import com.ftn.PrviMavenVebProjekat.model.Termin;
 import com.ftn.PrviMavenVebProjekat.model.Termini;
+import com.ftn.PrviMavenVebProjekat.service.TerminService;
 
 @Controller
 @RequestMapping(value="/medicinar")
-public class MedicinarController implements ApplicationContextAware{
+public class MedicinarController implements ServletContextAware{
 	
-	public static final String TERMINI_KEY = "medicinar";
+//	klasa je radila sa memorijom aplikacije i apl Contextom.implementiram servletContext zbog rada u fajlovima
 	
-
 	@Autowired
 	private ServletContext servletContext;
 	private String bURL;
 	
-	@Autowired
-	private ApplicationContext applicationContext;
 	
+	
+//	preko dependency injection(potrazi u literaturi) ubacujem servise  
+//	dependency injection u runtime-u injektuje implementacije tog servisa
 	@Autowired
-	private ApplicationMemory memorijaAplikacije;
-
+	private TerminService terminService;
+	
+	
+	
+//    metode za setovanje servletContexsta, moramo ga inicializovati
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;
+		
 	}
+//	izbrisem sve sto se tice memorijeAplikacije 
+		
 	@PostConstruct
 	public void init() {
-		bURL = servletContext.getContextPath() + "/";
-		memorijaAplikacije = applicationContext.getBean(ApplicationMemory.class);
-		
-		Termini termini = new Termini();
-		
-		memorijaAplikacije.put(MedicinarController.TERMINI_KEY, termini);
+		bURL = servletContext.getContextPath() + "/";		
 	}
 	@GetMapping		
 	@ResponseBody
 	public String medicinski() {
-		Termini termini = (Termini) memorijaAplikacije.get(MedicinarController.TERMINI_KEY);
+		List<Termin> termini = terminService.findAll();
 		
         StringBuilder retVal = new StringBuilder();
 
@@ -77,19 +80,16 @@ public class MedicinarController implements ApplicationContextAware{
 				            "<th>JMBG</th>" +
 				            "<th>Vreme</th>" +
 				            "<th>Vakcina</th>" +
-				"</tr>");
-		
-		
-		List<Termin> listaTermina = termini.findAll();
-		
-		for(int i = 0; i< listaTermina.size(); i++) {
+				"</tr>");	
+		for(int i = 0; i< termini.size(); i++) {
+			
 			retVal.append("<tr>"
-									+ "<td>" + listaTermina.get(i).getId()+ "</td>" 
-					+ "<td>" + listaTermina.get(i).getVreme()+ "</td>"
-							+ "<td>" + listaTermina.get(i).getVakcina()+ "</td>" +
+									+ "<td>" + termini.get(i).getId()+ "</td>" 
+					+ "<td>" + termini.get(i).getVreme()+ "</td>"
+							+ "<td>" + termini.get(i).getVakcina()+ "</td>" +
 							"				<td>" + 
 							"					<form method=\"post\" action=\"medicinar/ukloni\">\r\n" + 
-							"						<input type=\"hidden\" name=\"id\" value=\""+listaTermina.get(i).getId()+ "\">\r\n" + 
+							"						<input type=\"hidden\" name=\"id\" value=\""+termini.get(i).getId()+ "\">\r\n" + 
 							"						<input type=\"submit\" value=\"Daj vakcinu\"></td>\r\n" + 
 							"					</form>\r\n" +
 							"				</td>" +
@@ -107,10 +107,10 @@ public class MedicinarController implements ApplicationContextAware{
 	}
 	@PostMapping(value="/ukloni")
 	public void ukloniTermin(@RequestParam Long id, HttpServletResponse response) throws IOException {
-		Termini termini = (Termini) memorijaAplikacije.get(MedicinarController.TERMINI_KEY);
-		Termin deleted = termini.delete(id);
+		Termin deleted = terminService.delete(id);
 		response.sendRedirect(bURL + "medicinar");
        
 	}
+
 	
 }

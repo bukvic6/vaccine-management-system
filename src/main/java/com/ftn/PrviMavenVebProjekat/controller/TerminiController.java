@@ -100,7 +100,7 @@ public class TerminiController  implements ApplicationContextAware{
 		String jmbgg = ulogovani.getJmbg();
 	
 		
-		List<Termin> listaTermina = termini.findOne(jmbgg);
+		List<Termin> listaTermina = termini.terminiPoJmbg(jmbgg);
 		
 		
 
