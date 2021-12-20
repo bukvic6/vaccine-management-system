@@ -1,6 +1,7 @@
 package com.ftn.PrviMavenVebProjekat.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -23,7 +24,7 @@ import org.springframework.web.context.ServletContextAware;
 import com.ftn.PrviMavenVebProjekat.bean.SecondConfiguration.ApplicationMemory;
 import com.ftn.PrviMavenVebProjekat.model.Korisnik;
 import com.ftn.PrviMavenVebProjekat.model.Termin;
-import com.ftn.PrviMavenVebProjekat.model.Termini;
+import com.ftn.PrviMavenVebProjekat.service.KorisnikService;
 import com.ftn.PrviMavenVebProjekat.service.TerminService;
 
 @Controller
@@ -43,6 +44,9 @@ public class MedicinarController implements ServletContextAware{
 	@Autowired
 	private TerminService terminService;
 	
+	@Autowired
+	private KorisnikService korisnikService;
+	
 	
 	
 //    metode za setovanje servletContexsta, moramo ga inicializovati
@@ -61,6 +65,7 @@ public class MedicinarController implements ServletContextAware{
 	@ResponseBody
 	public String medicinski() {
 		List<Termin> termini = terminService.findAll();
+	
 		
         StringBuilder retVal = new StringBuilder();
 
@@ -81,11 +86,26 @@ public class MedicinarController implements ServletContextAware{
 				            "<th>Vreme</th>" +
 				            "<th>Vakcina</th>" +
 				"</tr>");	
+		
+		
+
+
+		
+
+		
 		for(int i = 0; i< termini.size(); i++) {
+			Termin trenutniTermin = termini.get(i);
+			String jmbgg = trenutniTermin.getJmbg();
+			
+			Korisnik korisnikJmbg = korisnikService.nadjiKorisnikaPoJMBG(jmbgg);
+//			for(int j = 0; j< korisnici.size(); j++){
+//				
 			
 			retVal.append("<tr>"
-									+ "<td>" + termini.get(i).getId()+ "</td>" 
-					+ "<td>" + termini.get(i).getVreme()+ "</td>"
+			        + "<td>" + korisnikJmbg.getIme()+ "</td>" 
+			        + "<td>" + korisnikJmbg.getPrezime()+ "</td>" 
+					        + "<td>" + termini.get(i).getJmbg()+ "</td>" 
+					        + "<td>" + termini.get(i).getVreme()+ "</td>"
 							+ "<td>" + termini.get(i).getVakcina()+ "</td>" +
 							"				<td>" + 
 							"					<form method=\"post\" action=\"medicinar/ukloni\">\r\n" + 

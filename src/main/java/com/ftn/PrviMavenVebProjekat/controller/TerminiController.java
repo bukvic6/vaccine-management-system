@@ -18,17 +18,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.ServletContextAware;
 
 import com.ftn.PrviMavenVebProjekat.bean.SecondConfiguration.ApplicationMemory;
-import com.ftn.PrviMavenVebProjekat.model.Korisnici;
 import com.ftn.PrviMavenVebProjekat.model.Korisnik;
 import com.ftn.PrviMavenVebProjekat.model.Termin;
-import com.ftn.PrviMavenVebProjekat.model.Termini;
+import com.ftn.PrviMavenVebProjekat.service.TerminService;
 
 @Controller
 @RequestMapping(value="/termini")
 
-public class TerminiController  implements ApplicationContextAware{
+public class TerminiController  implements ServletContextAware{
 	
 	public static final String TERMINI_KEY = "termini";
 	
@@ -37,29 +37,23 @@ public class TerminiController  implements ApplicationContextAware{
 	private String bURL;
 	
 	@Autowired
-	private ApplicationContext applicationContext;
+	private TerminService terminService;
 	
-	@Autowired
-	private ApplicationMemory memorijaAplikacije;
-
+	
+	
+//    metode za setovanje servletContexsta, moramo ga inicializovati
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;
+		
 	}
-	
-	
 //	instanciranje applicationConteksta
 	@PostConstruct
 	public void init() {
-		bURL = servletContext.getContextPath() + "/";
-		memorijaAplikacije = applicationContext.getBean(ApplicationMemory.class);
-		
-		Termini termini = new Termini();
+		bURL = servletContext.getContextPath() + "/";		
 		
 //		postavljanje termina u memoriju aplikacije
-		
-		memorijaAplikacije.put(TerminiController.TERMINI_KEY, termini);
-		
+				
 //		servletContext.setAttribute(TerminiController.TERMINI_KEY, termini);	
 
 	}
@@ -74,8 +68,10 @@ public class TerminiController  implements ApplicationContextAware{
 
 		
 		Korisnik ulogovani = (Korisnik) session.getAttribute(KorisnikController.ULOGOVANI_KORISNIK_KEY);
-		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
+		String jmbgg = ulogovani.getJmbg();
 		
+		
+		List<Termin> termini = terminService.terminiPoJmbg(jmbgg);
 		
 		
 		StringBuilder retVal = new StringBuilder();
@@ -96,26 +92,19 @@ public class TerminiController  implements ApplicationContextAware{
 				            "<th>JMBG</th>" +
 				            "<th>Vreme</th>" +
 				            "<th>Vakcina</th>" +
-				"</tr>");
-		String jmbgg = ulogovani.getJmbg();
-	
+				"</tr>");		
 		
-		List<Termin> listaTermina = termini.terminiPoJmbg(jmbgg);
-		
-		
-
-		
-		for(int i = 0; i< listaTermina.size(); i++) {
+		for(int i = 0; i< termini.size(); i++) {
 			retVal.append("<tr>"
 					+ "<td>" + ulogovani.getIme()+ "</td>"
 					+ "<td>" + ulogovani.getPrezime() +"</td>"
 							+ "<td>" + ulogovani.getJmbg()+ "</td>"
-									+ "<td>" + listaTermina.get(i).getId()+ "</td>" 
-					+ "<td>" + listaTermina.get(i).getVreme()+ "</td>"
-							+ "<td>" + listaTermina.get(i).getVakcina()+ "</td>" +
+									+ "<td>" + termini.get(i).getId()+ "</td>" 
+					+ "<td>" + termini.get(i).getVreme()+ "</td>"
+							+ "<td>" + termini.get(i).getVakcina()+ "</td>" +
 							"				<td>" + 
 							"					<form method=\"post\" action=\"termini/ukloni\">\r\n" + 
-							"						<input type=\"hidden\" name=\"id\" value=\""+listaTermina.get(i).getId()+ "\">\r\n" + 
+							"						<input type=\"hidden\" name=\"id\" value=\""+termini.get(i).getId()+ "\">\r\n" + 
 							"						<input type=\"submit\" value=\"ukloni\"></td>\r\n" + 
 							"					</form>\r\n" +
 							"				</td>" +
@@ -173,9 +162,7 @@ public class TerminiController  implements ApplicationContextAware{
 	@PostMapping(value="/ukloni")
 	
 	public void ukloniTermin(@RequestParam Long id, HttpServletResponse response) throws IOException {
-        
-		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
-		Termin deleted = termini.delete(id);
+		Termin deleted = terminService.delete(id);
 		response.sendRedirect(bURL + "termini");
        
 	}
@@ -186,8 +173,6 @@ public class TerminiController  implements ApplicationContextAware{
 	public void create(@RequestParam String vakcina, HttpServletResponse response,HttpSession session) throws IOException {		
 		//preuzimanje vrednosti iz konteksta
 		Korisnik ulogovani = (Korisnik) session.getAttribute(KorisnikController.ULOGOVANI_KORISNIK_KEY);
-
-		Termini termini = (Termini) memorijaAplikacije.get(TerminiController.TERMINI_KEY);
 		
 		Termin termin = new Termin();
 		if(vakcina.equals("Pfizer")) {
@@ -202,7 +187,7 @@ public class TerminiController  implements ApplicationContextAware{
 		termin.setJmbg(ulogovani.getJmbg());
 		
 			
-		Termin saved = termini.save(termin);
+		Termin saved = terminService.save(termin);
 		response.sendRedirect(bURL+"termini");
 	}
 }

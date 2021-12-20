@@ -16,89 +16,96 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.ServletContextAware;
 
 import com.ftn.PrviMavenVebProjekat.bean.SecondConfiguration.ApplicationMemory;
-import com.ftn.PrviMavenVebProjekat.model.Korisnici;
 import com.ftn.PrviMavenVebProjekat.model.Korisnik;
 import com.ftn.PrviMavenVebProjekat.model.TipKorisnika;
+import com.ftn.PrviMavenVebProjekat.service.KorisnikService;
 
 @Controller
 @RequestMapping(value = "/korisnici")
-public class KorisnikController {
+public class KorisnikController implements ServletContextAware{
 	private String bURL;
 	
 	@Autowired
 	private ServletContext servletContext;
 	
 	@Autowired
-	private ApplicationMemory memorijaAplikacije;
+	private KorisnikService korisnikService;
 	
-//	private String ULOGOVANI_KORISNIK_KEY = "ulogovani_korisnik";
-	public static final String KORISNIK_KEY = "korisnik";
+
+	@Override
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;		
+	}
+	
 	public static final String ULOGOVANI_KORISNIK_KEY = "ulogovani_korisnik";
 	
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
 		bURL = servletContext.getContextPath() + "/";
-		Korisnici korisnici = new Korisnici();
-		memorijaAplikacije.put(KORISNIK_KEY, korisnici);
+//		Korisnici korisnici = new Korisnici();
+//		memorijaAplikacije.put(KORISNIK_KEY, korisnici);
 	} 
 
-    @SuppressWarnings("unchecked")
-    @PostMapping(value = "/login")
-	public void login(@RequestParam(required = true) String jmbg,
-			@RequestParam(required = true) String lozinka, HttpServletResponse response, HttpSession session) throws IOException {
+	@GetMapping(value = "/login")
+	public void getLogin(@RequestParam(required = false) String email, @RequestParam(required = false) String lozinka,
+			HttpSession session, HttpServletResponse response) throws IOException {
+		postLogin(email, lozinka, session, response);
+	}
+
+	@PostMapping(value = "/login")
+	@ResponseBody
+	public void postLogin(@RequestParam(required = false) String jmbg, @RequestParam(required = false) String lozinka,
+			HttpSession session, HttpServletResponse response) throws IOException {
 		
-		Korisnici korisnici = (Korisnici) memorijaAplikacije.get(KORISNIK_KEY);
-		if (korisnici != null) {
-			if (korisnici.findAll().size() == 0) {
-				korisnici = new Korisnici();
-				memorijaAplikacije.put(KORISNIK_KEY, korisnici);
-				
-			}
-		}else {
-			korisnici = new Korisnici();
-			memorijaAplikacije.put(ULOGOVANI_KORISNIK_KEY, korisnici);
-			
-		}
+		Korisnik korisnik = korisnikService.findOne(jmbg, lozinka);
 		String greska = "";
-		Korisnik korisnik = korisnici.nadjiKorisnikaPoJMBG(jmbg);
-		if (korisnik == null) {
-			greska = "korisnik nije pronadjen <br/>";
-		}else if (!korisnik.getLozinka().equals(lozinka)) {
-			greska = "korisnik nije pronadjen <br/>";
-			
-		}
-		if(!greska.equals("")) {
+		if (korisnik == null)
+			greska = "neispravni kredencijali<br/>";
+
+		if (!greska.equals("")) {
 			response.setContentType("text/html; charset=UTF-8");
-			PrintWriter out = response.getWriter();
-			
+			PrintWriter out;
 			out = response.getWriter();
 
 			StringBuilder retVal = new StringBuilder();
 			retVal.append("<!DOCTYPE html>\r\n" + "<html>\r\n" + "<head>\r\n" + "	<meta charset=\"UTF-8\">\r\n"
 					+ "	<base href=\"/PrviMavenVebProjekat/\">	\r\n" + "	<title>Prijava korisnika</title>\r\n"
-					+ "	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/StiloviForma.css\"/>\r\n"
-					+ "	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/StiloviHorizontalniMeni.css\"/>\r\n"
-					+ "</head>\r\n" + "<body>\r\n" + "	<ul>\r\n"
-					+ "		<li><a href=\"registracija.html\">Registruj se</a></li>\r\n" + "	</ul>\r\n");
+					+ "</head>\r\n" + "<body>\r\n" + "	<ul>\r\n");
 			if (!greska.equals(""))
 				retVal.append("	<div>" + greska + "</div>\r\n");
 			retVal.append("	<form method=\"post\" action=\"korisnici/login\">\r\n" + "		<table>\r\n"
 					+ "			<caption>Prijava korisnika na sistem</caption>\r\n"
-					+ "			<tr><th>Email:</th><td><input type=\"text\" value=\"\" name=\"email\" required/></td></tr>\r\n"
-					+ "			<tr><th>Šifra:</th><td><input type=\"password\" value=\"\" name=\"sifra\" required/></td></tr>\r\n"
+					+ "			<tr><th>Jmbg:</th><td><input type=\"text\" value=\"\" name=\"jmbg\" required/></td></tr>\r\n"
+					+ "			<tr><th>Lozinka:</th><td><input type=\"password\" value=\"\" name=\"lozinka\" required/></td></tr>\r\n"
 					+ "			<tr><th></th><td><input type=\"submit\" value=\"Prijavi se\" /></td>\r\n"
 					+ "		</table>\r\n" + "	</form>\r\n" + "	<br/>\r\n" + "</body>\r\n" + "</html>");
 
 			out.write(retVal.toString());
 			return;
 		}
-			
-//		proverava da li je neko vec ulogovan na sesiji
-		if(session.getAttribute(KORISNIK_KEY)!= null) {
-			greska = "Potrebno je da se prvo odjavite. <br/>";
+
+		if (session.getAttribute(ULOGOVANI_KORISNIK_KEY) != null)
+			greska = "korisnik je već prijavljen na sistem morate se prethodno odjaviti<br/>";
+
+		if (!greska.equals("")) {
+			response.setContentType("text/html; charset=UTF-8");
+			PrintWriter out;
+			out = response.getWriter();
+
+			StringBuilder retVal = new StringBuilder();
+			retVal.append("<!DOCTYPE html>\r\n" + "<html>\r\n" + "<head>\r\n" + "	<meta charset=\"UTF-8\">\r\n"
+					+ "	<base href=\"/PrviiMavenVebProjekat/\">	\r\n" + "	<title>Prijava korisnika</title>\r\n"
+					+ "</head>\r\n" + "<body>\r\n" + "	<ul>\r\n");
+			if (!greska.equals(""))
+				retVal.append("	<div>" + greska + "</div>\r\n");
+			retVal.append("	<a href=\"index.html\">Povratak</a>\r\n" + "	<br/>\r\n" + "</body>\r\n" + "</html>");
+
+			out.write(retVal.toString());
+			return;
 		}
 		if(korisnik.getTipKorisnika().equals(TipKorisnika.MEDICINAR)) {
 			session.setAttribute(ULOGOVANI_KORISNIK_KEY, korisnik);
@@ -110,6 +117,7 @@ public class KorisnikController {
 		}
 		
 	}
+
 	
 
 }
