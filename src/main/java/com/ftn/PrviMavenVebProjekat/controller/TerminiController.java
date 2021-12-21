@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -116,6 +117,7 @@ public class TerminiController  implements ServletContextAware{
 		retVal.append(
 				"	<ul>\r\n" + 
 				"		<li><a href=\"termini/add\">Dodaj termin za vakcinu</a></li>\r\n" + 
+				"       <li><a href=\"termini/logout\">Odjavi se</a></li>\r\n" + 
 				"	</ul>\r\n");
 		
 		retVal.append(
@@ -185,10 +187,17 @@ public class TerminiController  implements ServletContextAware{
 			termin.setVakcina("AstraZeneka");
 		}
 		termin.setJmbg(ulogovani.getJmbg());
-		
+
 			
 		Termin saved = terminService.save(termin);
 		response.sendRedirect(bURL+"termini");
+	}
+	@GetMapping(value="/logout")
+	@ResponseBody
+	public void logout(HttpServletRequest request, HttpServletResponse response,HttpSession session) throws IOException {	
+		request.getSession().removeAttribute(KorisnikController.ULOGOVANI_KORISNIK_KEY);
+		request.getSession().invalidate();
+		response.sendRedirect(bURL);
 	}
 }
 

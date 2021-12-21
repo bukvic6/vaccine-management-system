@@ -10,8 +10,11 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,6 +80,25 @@ public class TerminServiceImpl implements TerminService{
 	return povratna;
 	}
 	
+	private ArrayList<Termin> snimiUFajlArr(List<Termin> remainingElements){
+		ArrayList< Termin> povratna = new ArrayList<>();
+		try {
+			Path path = Paths.get(pathToFile);
+			System.out.println(path.toFile().getAbsolutePath());
+			List<String> lines = new ArrayList<>();
+			
+			for(Termin termin : remainingElements) {
+				lines.add(termin.toString());
+				povratna.add(termin);
+			}
+			Files.write(path, lines, Charset.forName("UTF-8"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	return povratna;
+	}
+	
 	
 	@Override
 	public List<Termin> findAll() {
@@ -96,7 +118,6 @@ public class TerminServiceImpl implements TerminService{
 		}
 		return ret;
 	}
-	
 
     private Long nextId(Map<Long, Termin> termini) {
     	Long nextId = 1L;
@@ -121,7 +142,6 @@ public class TerminServiceImpl implements TerminService{
 
 		return termin;
 	}
-	
     @Override
 	public Termin delete(Long id) {
 		Map<Long, Termin> termini = citajIzFajla();
@@ -136,10 +156,53 @@ public class TerminServiceImpl implements TerminService{
 		return termin;
 		
 	}
+    
+//    for (String key: map.keySet()) {
+//    	   System.out.println(key + "/" + map.get(key));
+//    	}
+//	Map<Long, Termin> termini = citajIzFajla();
+//	Map<Long, Termin> remainingElements = new HashMap<>();
+//    for (Termin t: termini.values()) {
+//    if (!Objects.equals(t, jmbg)) {
+//        remainingElements.add(t);
+//		
+    
+//  Map<Long, Termin> remainingElements = new HashMap<>();
+//  for (Termin t: termini.values()) {
+//      if (!Objects.equals(t, element)) {
+//      remainingElements.add(t);
+//      shallowCopy.putAll(remainingElements);
+//      
+//  }
+    
+    @Override
+    public Map<Long,Termin>removeAll(String jmbg) {
+    	Map<Long, Termin> termini = citajIzFajla();
+    	Map<Long, Termin> remainingElements = new HashMap<>();
+    	for(Long key :termini.keySet()) {
+    		Termin t = (Termin)termini.get(key);
+    		if(!t.getJmbg().equals(jmbg)) {
+    			remainingElements.put(key, t);
+    			
+    		}
 		
-	
-	
-	
-	
+        }
+    	snimiUFajl(remainingElements);
+		return remainingElements;
+    
+     }}
+//      @Override
+//	    public Termin deleteZaMedicinara(String jmbg) {
+//		Map<Long, Termin> termini = citajIzFajla();
+//		if (!termini.containsKey(jmbg)) {
+//			throw new IllegalArgumentException("Pokusavate da izbrisete termin koji ne postoji");
+//		}
+//		Termin termin = termini.get(jmbg);
+//		if (termini.containsKey(jmbg)) {
+//			termini.replaceAll(jmbg);
+//		}
+//		snimiUFajl(termini);
+//		return termin;
+//		
+//	}
 
-}
