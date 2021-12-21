@@ -1,6 +1,7 @@
 package com.ftn.PrviMavenVebProjekat.controller;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -98,13 +99,13 @@ public class TerminiController  implements ServletContextAware{
 				            "<th>Vreme</th>" +
 				            "<th>Vakcina</th>" +
 				"</tr>");		
-		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		for(int i = 0; i< termini.size(); i++) {
 			retVal.append("<tr>"
 					+ "<td>" + ulogovani.getIme()+ "</td>"
 					+ "<td>" + ulogovani.getPrezime() +"</td>"
 							+ "<td>" + ulogovani.getJmbg()+ "</td>"
-					+ "<td>" + termini.get(i).getVreme().withSecond(0).withNano(0)+ "</td>"
+					+ "<td>" + termini.get(i).getVreme().format(formatter)+ "</td>"
 							+ "<td>" + termini.get(i).getVakcina()+ "</td>" +
 							"				<td>" + 
 							"					<form method=\"post\" action=\"termini/ukloni\">\r\n" + 

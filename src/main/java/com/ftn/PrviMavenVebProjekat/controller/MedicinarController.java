@@ -1,6 +1,7 @@
 package com.ftn.PrviMavenVebProjekat.controller;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,7 @@ public class MedicinarController implements ServletContextAware{
 		for(int i = 0; i< termini.size(); i++) {
 			Termin trenutniTermin = termini.get(i);
 			String jmbgg = trenutniTermin.getJmbg();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 			
 			Korisnik korisnikJmbg = korisnikService.nadjiKorisnikaPoJMBG(jmbgg);
 			
@@ -101,7 +103,7 @@ public class MedicinarController implements ServletContextAware{
 			        + "<td>" + korisnikJmbg.getIme()+ "</td>" 
 			        + "<td>" + korisnikJmbg.getPrezime()+ "</td>" 
 					        + "<td>" + termini.get(i).getJmbg()+ "</td>" 
-					        + "<td>" + termini.get(i).getVreme().withSecond(0).withNano(0)+ "</td>"
+					        + "<td>" + termini.get(i).getVreme().format(formatter)+ "</td>"
 							+ "<td>" + termini.get(i).getVakcina()+ "</td>" +
 							"				<td>" + 
 							"					<form method=\"post\" action=\"medicinar/ukloni\">\r\n" + 
