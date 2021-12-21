@@ -78,36 +78,30 @@ public class MedicinarController implements ServletContextAware{
 				"	<meta charset=\"UTF-8\" />\n" + 
 				"	<base href=\""+ bURL + "\">\n" + 
 				"	<title>Prikaz Termina</title>\n" + 
+				"	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/StiloviTabela.css\"/>\r\n" + 
+				"	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/StiloviHorizontalniMeni.css\"/>\r\n"+
 				"</head>\n" + 
 				"<body>\n" +
 				"<table>" +
 				       "<tr>" + 
-				            "<th></th>" +
+				            "<th>Ime</th>" +
 				            "<th>Prezime</th>" +
 				            "<th>JMBG</th>" +
 				            "<th>Vreme</th>" +
 				            "<th>Vakcina</th>" +
 				"</tr>");	
-		
-		
 
-
-		
-
-		
 		for(int i = 0; i< termini.size(); i++) {
 			Termin trenutniTermin = termini.get(i);
 			String jmbgg = trenutniTermin.getJmbg();
 			
 			Korisnik korisnikJmbg = korisnikService.nadjiKorisnikaPoJMBG(jmbgg);
-//			for(int j = 0; j< korisnici.size(); j++){
-//				
 			
 			retVal.append("<tr>"
 			        + "<td>" + korisnikJmbg.getIme()+ "</td>" 
 			        + "<td>" + korisnikJmbg.getPrezime()+ "</td>" 
 					        + "<td>" + termini.get(i).getJmbg()+ "</td>" 
-					        + "<td>" + termini.get(i).getVreme().withSecond(0).withNano(0).withMinute(0)+ "</td>"
+					        + "<td>" + termini.get(i).getVreme().withSecond(0).withNano(0)+ "</td>"
 							+ "<td>" + termini.get(i).getVakcina()+ "</td>" +
 							"				<td>" + 
 							"					<form method=\"post\" action=\"medicinar/ukloni\">\r\n" + 
@@ -131,15 +125,12 @@ public class MedicinarController implements ServletContextAware{
 				"</body>\r\n"+
 				"</html>\r\n");		
 		return retVal.toString();
-		
-		
-		
+	
 	}
 	@PostMapping(value="/ukloni")
 	public void ukloniTermin(@RequestParam String jmbg, HttpServletResponse response) throws IOException {
 		Map<Long, Termin> deleted = terminService.removeAll(jmbg);
 		response.sendRedirect(bURL + "medicinar");
-       
 	}
 	
 	@GetMapping(value="/logout")

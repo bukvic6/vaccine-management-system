@@ -73,7 +73,11 @@ public class KorisnikController implements ServletContextAware{
 
 			StringBuilder retVal = new StringBuilder();
 			retVal.append("<!DOCTYPE html>\r\n" + "<html>\r\n" + "<head>\r\n" + "	<meta charset=\"UTF-8\">\r\n"
-					+ "	<base href=\"/PrviMavenVebProjekat/\">	\r\n" + "	<title>Prijava korisnika</title>\r\n"
+					+ "	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/StiloviForma.css\"/>\r\n"
+					+ "	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/StiloviHorizontalniMeni.css\"/>\r\n"
+					+ "	<base href=\"/PrviMavenVebProjekat/\">	\r\n" + 
+					"<title>Prijava korisnika</title>\r\n"
+				   
 					+ "</head>\r\n" + "<body>\r\n" + "	<ul>\r\n");
 			if (!greska.equals(""))
 				retVal.append("	<div>" + greska + "</div>\r\n");

@@ -17,11 +17,11 @@ td.broj {
 
 th {
 	color: white;
-	background-color: DodgerBlue;
+	background-color: pink;
 }
 
 tr:nth-child(even) {
-	background-color: LightGray;
+	background-color: pink;
 }
 
 input[type="search"] {

@@ -9,9 +9,9 @@ import com.ftn.PrviMavenVebProjekat.model.Termin;
 public interface TerminService {
 	List<Termin> findAll();
 	List<Termin> terminiPoJmbg(String jmbg);
-	Termin save(Termin termin);
 	Termin delete(Long id);
 	Map<Long, Termin> removeAll(String element);
+	Map<Long, Termin> save(Termin termin);
 	
 
 }

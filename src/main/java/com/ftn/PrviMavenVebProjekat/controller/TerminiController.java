@@ -3,6 +3,8 @@ package com.ftn.PrviMavenVebProjekat.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -84,11 +86,13 @@ public class TerminiController  implements ServletContextAware{
 				"	<meta charset=\"UTF-8\" />\n" + 
 				"	<base href=\""+ bURL + "\">\n" + 
 				"	<title>Prikaz Termina</title>\n" + 
+				"	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/StiloviTabela.css\"/>\r\n" + 
+				"	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/StiloviHorizontalniMeni.css\"/>\r\n"+
 				"</head>\n" + 
 				"<body>\n" +
 				"<table>" +
 				       "<tr>" + 
-				            "<th></th>" +
+				            "<th>Ime</th>" +
 				            "<th>Prezime</th>" +
 				            "<th>JMBG</th>" +
 				            "<th>Vreme</th>" +
@@ -100,8 +104,7 @@ public class TerminiController  implements ServletContextAware{
 					+ "<td>" + ulogovani.getIme()+ "</td>"
 					+ "<td>" + ulogovani.getPrezime() +"</td>"
 							+ "<td>" + ulogovani.getJmbg()+ "</td>"
-									+ "<td>" + termini.get(i).getId()+ "</td>" 
-					+ "<td>" + termini.get(i).getVreme()+ "</td>"
+					+ "<td>" + termini.get(i).getVreme().withSecond(0).withNano(0)+ "</td>"
 							+ "<td>" + termini.get(i).getVakcina()+ "</td>" +
 							"				<td>" + 
 							"					<form method=\"post\" action=\"termini/ukloni\">\r\n" + 
@@ -111,7 +114,6 @@ public class TerminiController  implements ServletContextAware{
 							"				</td>" +
 							"			</tr>\r\n");
 		}
-
 		retVal.append(
 				"		</table>\r\n");
 		retVal.append(
@@ -139,8 +141,8 @@ public class TerminiController  implements ServletContextAware{
 				"<head>\r\n" + 
 				"	<meta charset=\"UTF-8\">\r\n" + 
 	    		"	<base href=\""+bURL+"\">" + 
-				"	<title>Dodaj knjigu</title>\r\n" + 
-				"	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/StiloviForma.css\"/>\r\n" + 
+				"	<title>Prikaz termina</title>\r\n" + 
+				"	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/StiloviTabela.css\"/>\r\n" + 
 				"	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/StiloviHorizontalniMeni.css\"/>\r\n"+
 				"</head>\r\n" + 
 				"<body>\r\n" + 
@@ -152,7 +154,7 @@ public class TerminiController  implements ServletContextAware{
 				"      <option value=\"Pfizer\">Pfizer</option>\n" + 
 				"      <option value=\"Sputnik\">Sputnik</option>\n" + 
 				"      <option value=\"Sinopharm\">Sinopharm</option>\n" + 
-				"       <option value=\"AstraZrnrca\">AstraZrnrca</option>\n" + 
+				"       <option value=\"AstraZeneca\">AstraZeneca</option>\n" + 
 				"      <tr><th></th><td><input type=\"submit\" value=\"Dodaj\" /></td>\r\n" + 
 				"	</form>\r\n" +
 				"	<br/>\r\n");
@@ -178,18 +180,18 @@ public class TerminiController  implements ServletContextAware{
 		
 		Termin termin = new Termin();
 		if(vakcina.equals("Pfizer")) {
-			termin.setVakcina("Fizer");
+			termin.setVakcina("Pfizer");
 		}else if(vakcina.equals("Sputnik")) {
 			termin.setVakcina("Sputnik");
 		}else if(vakcina.equals("Sinopharm")) {
 			termin.setVakcina("Sinopharm");
 		}else {
-			termin.setVakcina("AstraZeneka");
+			termin.setVakcina("AstraZeneca");
 		}
+		
 		termin.setJmbg(ulogovani.getJmbg());
 
-			
-		Termin saved = terminService.save(termin);
+		Map<Long, Termin> saved = terminService.save(termin);
 		response.sendRedirect(bURL+"termini");
 	}
 	@GetMapping(value="/logout")
