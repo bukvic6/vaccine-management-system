@@ -9,6 +9,7 @@ KLINIKA ZA VAKCINACIJU
 -----KLIJENT-----
 
 -Rezervacija termina za odabranu vakcinu
+
 -Otkazivanje termina za odabranu vakcinu 
 
 -----MEDICINAR-----
